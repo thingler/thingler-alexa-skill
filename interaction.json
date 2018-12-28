@@ -1,0 +1,46 @@
+{
+    "interactionModel":{
+        "languageModel":{
+            "invocationName":"my smart plug",
+            "types":[],
+            "intents":[
+                {
+                  "name": "AMAZON.CancelIntent",
+                  "samples": []
+                },
+                {
+                  "name": "AMAZON.HelpIntent",
+                  "samples": []
+                },
+                {
+                  "name": "AMAZON.StopIntent",
+                  "samples": []
+                },
+                {
+                    "name":"TurnOnIntent",
+                    "slots":[
+
+                    ],
+                    "samples":[
+                        "turn on",
+                        "turn on plug",
+                        "to turn on",
+                        "to turn on plug"
+                    ]
+                },
+                {
+                    "name":"TurnOffIntent",
+                    "slots":[
+
+                    ],
+                    "samples":[
+                        "turn off",
+                        "turn off plug",
+                        "to turn off",
+                        "to turn off plug"
+                    ]
+                }
+            ]
+        }
+    }
+}
