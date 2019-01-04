@@ -5,19 +5,17 @@ import (
 	"log"
 
 	"github.com/aws/aws-lambda-go/lambda"
-
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/credentials/ec2rolecreds"
 	"github.com/aws/aws-sdk-go/aws/ec2metadata"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/iotdataplane"
-
 	alexa "github.com/ericdaugherty/alexa-skills-kit-golang"
 )
 
-// OSSPlug handles reqeusts from the OSSPlug skill.
-type OSSPlug struct {
+// Thingler handles requests from the Alexa skill.
+type Thingler struct {
 	config *Config
 }
 
@@ -33,7 +31,7 @@ func Handle(ctx context.Context, requestEnv *alexa.RequestEnvelope) (interface{}
 
 	a := &alexa.Alexa{
 		ApplicationID: config.ApplicationID,
-		RequestHandler: &OSSPlug{
+		RequestHandler: &Thingler{
 			config: config,
 		},
 		IgnoreApplicationID: false,
@@ -43,20 +41,20 @@ func Handle(ctx context.Context, requestEnv *alexa.RequestEnvelope) (interface{}
 }
 
 // OnSessionStarted called when a new session is created.
-func (plug *OSSPlug) OnSessionStarted(ctx context.Context, request *alexa.Request, session *alexa.Session, ctxPtr *alexa.Context, response *alexa.Response) error {
+func (thing *Thingler) OnSessionStarted(ctx context.Context, request *alexa.Request, session *alexa.Session, ctxPtr *alexa.Context, response *alexa.Response) error {
 
 	log.Printf("OnSessionStarted requestId=%s, sessionId=%s", request.RequestID, session.SessionID)
 
 	return nil
 }
 
-// OnLaunch called with a reqeust is received of type LaunchRequest
-func (plug *OSSPlug) OnLaunch(ctx context.Context, request *alexa.Request, session *alexa.Session, ctxPtr *alexa.Context, response *alexa.Response) error {
-	speechText := "Welcome to My Smart Plug, you can ask me to turn the smart plug on or to turn the smart plug off"
+// OnLaunch called when a request is received of type LaunchRequest
+func (thing *Thingler) OnLaunch(ctx context.Context, request *alexa.Request, session *alexa.Session, ctxPtr *alexa.Context, response *alexa.Response) error {
+	speechText := "Welcome to Thingler, you can ask me to turn the Thingler smart plug on or to turn the Thingler smart plug off"
 
 	log.Printf("OnLaunch requestId=%s, sessionId=%s", request.RequestID, session.SessionID)
 
-	response.SetSimpleCard(plug.config.CardTitle, speechText)
+	response.SetSimpleCard(thing.config.CardTitle, speechText)
 	response.SetOutputText(speechText)
 	response.SetRepromptText(speechText)
 
@@ -65,8 +63,8 @@ func (plug *OSSPlug) OnLaunch(ctx context.Context, request *alexa.Request, sessi
 	return nil
 }
 
-// OnIntent called with a reqeust is received of type IntentRequest
-func (plug *OSSPlug) OnIntent(ctx context.Context, request *alexa.Request, alexaSession *alexa.Session, ctxPtr *alexa.Context, response *alexa.Response) error {
+// OnIntent called when a request is received of type IntentRequest
+func (thing *Thingler) OnIntent(ctx context.Context, request *alexa.Request, alexaSession *alexa.Session, ctxPtr *alexa.Context, response *alexa.Response) error {
 
 	log.Printf("OnIntent requestId=%s, sessionId=%s, intent=%s", request.RequestID, alexaSession.SessionID, request.Intent.Name)
 
@@ -82,9 +80,9 @@ func (plug *OSSPlug) OnIntent(ctx context.Context, request *alexa.Request, alexa
 		})
 
 	config := &aws.Config{
-		Region:      &plug.config.Region,
+		Region:      &thing.config.Region,
 		Credentials: creds,
-		Endpoint:    &plug.config.IOTEndpoint,
+		Endpoint:    &thing.config.IOTEndpoint,
 	}
 
 	clientIOT := iotdataplane.New(sess, config)
@@ -92,18 +90,20 @@ func (plug *OSSPlug) OnIntent(ctx context.Context, request *alexa.Request, alexa
 	turnOn := &IntentTurnOn{
 		IOTClient: clientIOT,
 		Response:  response,
-		CardTitle: &plug.config.CardTitle,
+		CardTitle: &thing.config.CardTitle,
+		Topic:     &thing.config.IOTTopic,
 	}
 
 	turnOff := &IntentTurnOff{
 		IOTClient: clientIOT,
 		Response:  response,
-		CardTitle: &plug.config.CardTitle,
+		CardTitle: &thing.config.CardTitle,
+		Topic:     &thing.config.IOTTopic,
 	}
 
 	help := &IntentHelp{
 		Response:  response,
-		CardTitle: &plug.config.CardTitle,
+		CardTitle: &thing.config.CardTitle,
 	}
 
 	intent, err := NewIntentFactory().
@@ -120,8 +120,8 @@ func (plug *OSSPlug) OnIntent(ctx context.Context, request *alexa.Request, alexa
 	return err
 }
 
-// OnSessionEnded called with a reqeust is received of type SessionEndedRequest
-func (plug *OSSPlug) OnSessionEnded(ctx context.Context, request *alexa.Request, session *alexa.Session, ctxPtr *alexa.Context, response *alexa.Response) error {
+// OnSessionEnded called when a request is received of type SessionEndedRequest
+func (thing *Thingler) OnSessionEnded(ctx context.Context, request *alexa.Request, session *alexa.Session, ctxPtr *alexa.Context, response *alexa.Response) error {
 
 	log.Printf("OnSessionEnded requestId=%s, sessionId=%s", request.RequestID, session.SessionID)
 

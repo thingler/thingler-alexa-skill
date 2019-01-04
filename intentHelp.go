@@ -22,7 +22,7 @@ func (intent *IntentHelp) Do() error {
 
 	log.Printf("%s triggered", intent.Name())
 
-	speechText := "You can ask the plug to turn on or to turn off"
+	speechText := "You can ask the Thingler smart plug to turn on or to turn off"
 
 	intent.Response.SetSimpleCard(*intent.CardTitle, speechText)
 	intent.Response.SetOutputText(speechText)

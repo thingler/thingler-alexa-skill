@@ -1,6 +1,7 @@
 {
     "application_id" : "amzn1.ask.skill.example-id",
-    "card_title"     : "Open Source Smart Plug",
+    "card_title"     : "Thingler Smart Plug",
     "region"         : "eu-west-1",
-    "iot_endpoint"   : "iotexampleendpoint-ats.iot.eu-west-1.amazonaws.com"
+    "iot_endpoint"   : "iotexampleendpoint-ats.iot.eu-west-1.amazonaws.com",
+    "iot_topic"      : "thingler/smartplug"
 }

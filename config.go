@@ -11,6 +11,7 @@ type Config struct {
 	CardTitle     string `json:"card_title"`
 	Region        string `json:"region"`
 	IOTEndpoint   string `json:"iot_endpoint"`
+	IOTTopic      string `json:"iot_topic"`
 }
 
 func (c *Config) Parse() error {
