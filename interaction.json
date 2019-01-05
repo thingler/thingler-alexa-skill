@@ -1,7 +1,7 @@
 {
     "interactionModel":{
         "languageModel":{
-            "invocationName":"thingler smart plug",
+            "invocationName":"thingler devices",
             "types":[],
             "intents":[
                 {
@@ -24,8 +24,14 @@
                     "samples":[
                         "turn on",
                         "turn on plug",
+                        "turn on smart plug",
+                        "turn thingler smart plug on",
+                        "turn thingler pug on",
                         "to turn on",
-                        "to turn on plug"
+                        "to turn on plug",
+                        "to turn on smart plug",
+                        "to turn thingler smart plug on",
+                        "to turn thingler pug on"
                     ]
                 },
                 {
@@ -36,8 +42,14 @@
                     "samples":[
                         "turn off",
                         "turn off plug",
+                        "turn off smart plug",
+                        "turn thingler smart plug off",
+                        "turn thingler pug off",
                         "to turn off",
-                        "to turn off plug"
+                        "to turn off plug",
+                        "to turn off smart plug",
+                        "to turn thingler smart plug off",
+                        "to turn thingler pug off"
                     ]
                 }
             ]

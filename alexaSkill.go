@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"regexp"
 
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
@@ -50,13 +51,19 @@ func (thing *Thingler) OnSessionStarted(ctx context.Context, request *alexa.Requ
 
 // OnLaunch called when a request is received of type LaunchRequest
 func (thing *Thingler) OnLaunch(ctx context.Context, request *alexa.Request, session *alexa.Session, ctxPtr *alexa.Context, response *alexa.Response) error {
-	speechText := "Welcome to Thingler, you can ask me to turn the Thingler smart plug on or to turn the Thingler smart plug off"
+	speechText := `<speak><p>Welcome to <phoneme alphabet='ipa' ph='Thiŋler'>Thingler</phoneme>,
+	you can ask me to turn the <phoneme alphabet='ipa' ph='Thiŋler'>Thingler</phoneme> smart plug on, or
+	to turn the <phoneme alphabet='ipa' ph='Thiŋler'>Thingler</phoneme> smart plug off.</p>
+	<p>What do you want me to do?</p></speak>`
+
+	cleanText := regexp.MustCompile("<[^>]*>").
+		ReplaceAllString(speechText, "")
 
 	log.Printf("OnLaunch requestId=%s, sessionId=%s", request.RequestID, session.SessionID)
 
-	response.SetSimpleCard(thing.config.CardTitle, speechText)
-	response.SetOutputText(speechText)
-	response.SetRepromptText(speechText)
+	response.SetSimpleCard(thing.config.CardTitle, cleanText)
+	response.SetOutputSSML(speechText)
+	response.SetRepromptSSML(speechText)
 
 	response.ShouldSessionEnd = false
 

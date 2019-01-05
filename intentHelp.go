@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"regexp"
 
 	alexa "github.com/ericdaugherty/alexa-skills-kit-golang"
 )
@@ -22,11 +23,14 @@ func (intent *IntentHelp) Do() error {
 
 	log.Printf("%s triggered", intent.Name())
 
-	speechText := "You can ask the Thingler smart plug to turn on or to turn off"
+	speechText := `<speak>You can ask the <phoneme alphabet='ipa' ph='Thiŋler'>Thingler</phoneme>
+smart plug to turn on, or to turn off</speak>`
 
-	intent.Response.SetSimpleCard(*intent.CardTitle, speechText)
-	intent.Response.SetOutputText(speechText)
-	intent.Response.SetRepromptText(speechText)
+	cleanText := regexp.MustCompile("<[^>]*>").
+		ReplaceAllString(speechText, "")
+
+	intent.Response.SetSimpleCard(*intent.CardTitle, cleanText)
+	intent.Response.SetOutputSSML(speechText)
 
 	return nil
 }
